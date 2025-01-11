@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useDailyLevel } from '../hooks/useDailyLevel';
+//import { useDailyLevel } from '../hooks/useDailyLevel';
 import Confetti from 'react-confetti'
 import { useWindowSize } from 'react-use'
 import { Toaster, toast } from 'sonner';
 import VictoryModal from './VictoryModal.tsx';
+import { usePuzzle } from '../hooks/getpuzzle.ts';
+import { useDailyPuzzle } from '../hooks/getDailyPuzzle.ts';
 
 interface Position {
     x: number;
@@ -108,7 +110,7 @@ function parseRushHourBoard(boardString: string): { blocks: Block[], walls: Posi
 }
 
 const KlotskiGame = () => {
-    const { level, loading, error } = useDailyLevel();
+    //const { level, loading, error } = useDailyLevel();
     const [blocks, setBlocks] = useState<Block[]>([]);
     const [initialBlocks, setInitialBlocks] = useState<Block[]>([]); // Nuevo estado para guardar la posición inicial
     const [walls, setWalls] = useState<Position[]>([]);
@@ -128,6 +130,9 @@ const KlotskiGame = () => {
     const [time, setTime] = useState(0);
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const { level, loading, error } = useDailyPuzzle();
+    //const { level, loading, error } = usePuzzle(puzzleId);
+
 
     //#region Manejo de eventos
     //#region Manejo de eventos mouse
@@ -252,7 +257,31 @@ const KlotskiGame = () => {
         const secs = seconds % 60;
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
-
+    useEffect(() => {
+        if (level) {
+            try {
+                // Crear el string del nivel en el formato que espera tu parseLevel
+                const levelString = `${level.movimientos} ${level.puzzle} ${level.clustersize}`;
+                const parsedLevel = parseLevelString(levelString);
+                const { blocks: newBlocks, walls: newWalls } = parseRushHourBoard(parsedLevel.board);
+                setBlocks(newBlocks);
+                setInitialBlocks(JSON.parse(JSON.stringify(newBlocks)));
+                setWalls(newWalls);
+                setRequiredMoves(parsedLevel.moves);
+                setHasWon(false);
+                setMoveCount(0);
+            } catch (e) {
+                console.error("Error parsing board:", e);
+                // Tu lógica de fallback con puzzles locales
+                const randomIndex = Math.floor(Math.random() * localPuzzles.length);
+                const { blocks: fallbackBlocks, walls: fallbackWalls } = parseRushHourBoard(localPuzzles[randomIndex].board);
+                setBlocks(fallbackBlocks);
+                setInitialBlocks(JSON.parse(JSON.stringify(fallbackBlocks)));
+                setWalls(fallbackWalls);
+                setRequiredMoves(localPuzzles[randomIndex].moves);
+            }
+        }
+    }, [level]);
 
 
 
@@ -269,6 +298,7 @@ const KlotskiGame = () => {
 
 
     // Actualizar el puzzle cuando se cambia de nivel
+    /*
     useEffect(() => {
         if (level) {
             try {
@@ -291,7 +321,7 @@ const KlotskiGame = () => {
             }
         }
     }, [level]);
-
+*/
 
     //#region Movimientos
     //Checkear si el movimiento es válido
