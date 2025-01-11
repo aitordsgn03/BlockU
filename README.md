@@ -1,50 +1,79 @@
-# React + TypeScript + Vite
+# Klotski Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto es una implementación de un juego tipo Klotski desarrollado con React y TypeScript. El objetivo del juego es mover los bloques dentro de un tablero hasta liberar el bloque principal.
 
-Currently, two official plugins are available:
+## Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Diseño interactivo:** Permite mover los bloques arrastrándolos o utilizando el teclado.
+- **Tableros predefinidos:** Se cargan puzzles de dificultad variable desde una API o datos locales.
+- **Interfaz personalizable:** Colores y estilos pueden modificarse fácilmente desde variables.
+- **Contador de movimientos:** Rastrea los movimientos realizados por el jugador.
 
-## Expanding the ESLint configuration
+## Tecnologías utilizadas
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React
+- TypeScript
+- pnpm
+- Tailwind CSS
+- Fontsource (para las fuentes tipográficas)
 
-- Configure the top-level `parserOptions` property like this:
+## Instalación
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clona este repositorio:
+
+   ```bash
+   git clone [https://github.com/tu_usuario/klotski-game.git](https://github.com/aitordsgn03/BlockU.git)
+   cd BlockU
+   ```
+
+2. Instala las dependencias usando pnpm:
+
+   ```bash
+   pnpm install
+   ```
+
+3. Inicia el servidor de desarrollo:
+
+   ```bash
+   pnpm dev
+   ```
+
+4. Abre tu navegador y accede a `http://localhost:5173` para jugar.
+
+## Personalización
+
+### Cambiar colores de los bloques
+Los colores de los bloques se definen en las siguientes variables dentro del código:
+
+```tsx
+const blockColors = {
+  primary: '#EBAEBC', // Bloque principal
+  vertical: '#CBBFCF',
+  horizontal: '#C3DEEB',
+  single: '#FFE5BA',
+  default: '#FFFFFF',
+};
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Modifica estas variables para cambiar la apariencia del juego.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Fuentes
+El proyecto utiliza la fuente "Inter Variable" proporcionada por Fontsource. Para cambiar o personalizar la tipografía:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+1. Edita el archivo principal de estilos (generalmente `src/index.css` o `App.tsx`) para cargar la fuente.
+
+   ```tsx
+   import '@fontsource-variable/inter';
+   ```
+
+2. Configura el estilo global o utiliza clases de Tailwind CSS.
+
+## Problemas conocidos
+
+- **CORS:** Si utilizas una API remota, asegúrate de habilitar el acceso desde el navegador.
+- **Movimientos:** Actualmente, los movimientos pueden contar aunque no se haya realizado un desplazamiento.
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia [MIT](LICENSE).
+
