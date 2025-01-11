@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+    --primary-color: #EBAEBC;
+    --secondary-color: #CBBFCF;
+    --tertiary-color: #C3DEEB;
+    --highlight-color: #FFE5BA;
+    --wall-color: #666666;
+    --background-color: #FDFDFD;
+    --text-color: #333333;
+}
+@keyframes slideLeftRight {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-10px);
+    }
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+  }
