@@ -18,7 +18,7 @@ interface Block {
     height: number;
     position: Position;
 }
-/*
+
 const localPuzzles = [
     { moves: 1, board: "ooooooooooooAAoooooooooooooooooooooo" },
     { moves: 15, board: "oDBBGHoDoEGHAAoEoICCCFoIoooFoooooooo" },
@@ -42,10 +42,8 @@ const localPuzzles = [
     { moves: 15, board: "BBBooLooJCCLAAJoKooIDDKooIoxFFGGHHHo" },
     { moves: 12, board: "HIoBBoHICCDDAAJoKLEEJoKLooooxooGGooo" },
     { moves: 16, board: "GooxooGooIoJGAAIoJooHCCKooHDDKEEEFFK" }
-];*/
-const localPuzzles = [
-    { moves: 1, board: "ooooooooooooAAoooooooooooooooooooooo" },
-]
+];
+
 
 interface ParsedLevel {
     moves: number;
