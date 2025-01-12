@@ -45,7 +45,7 @@ export const useDailyPuzzle = () => {
                 }
 
                 setLoading(true);
-                const response = await fetch('http://localhost:5000/puzzle/daily');
+                const response = await fetch('https://aitordsgnapi.onrender.com/puzzle/daily');
                 
                 if (!response.ok) {
                     throw new Error('No se pudo obtener el puzzle del día');
