@@ -4,7 +4,7 @@ import Confetti from 'react-confetti'
 import { useWindowSize } from 'react-use'
 import { Toaster, toast } from 'sonner';
 import VictoryModal from './VictoryModal.tsx';
-import { usePuzzle } from '../hooks/getpuzzle.ts';
+//import { usePuzzle } from '../hooks/getpuzzle.ts';
 import { useDailyPuzzle } from '../hooks/getDailyPuzzle.ts';
 
 interface Position {
