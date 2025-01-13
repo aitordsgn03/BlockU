@@ -516,7 +516,7 @@ const KlotskiGame = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background touch-none">
+        <div className="h-full w-full flex flex-col items-center justify-center overflow-hidden bg-background touch-none">
             <Toaster position="top-center" />
             <div className="text-center p-4">
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 max-w-md mx-auto">
