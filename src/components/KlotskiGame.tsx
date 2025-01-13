@@ -16,7 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { es } from "date-fns/locale";
 
 
 interface Position {
@@ -572,7 +571,8 @@ const KlotskiGame = () => {
                                 variant="outline"
                                 className="w-[240px] justify-start text-left font-normal"
                             >
-                                <CalendarIcon className="mr-2 size-6" />
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? format(date, "PPP") : <span>Pick a date</span>}
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
