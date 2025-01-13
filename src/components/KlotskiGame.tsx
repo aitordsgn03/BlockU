@@ -7,6 +7,17 @@ import VictoryModal from './VictoryModal.tsx';
 //import { usePuzzle } from '../hooks/getpuzzle.ts';
 import { useDailyPuzzle } from '../hooks/getDailyPuzzle.ts';
 
+import { Calendar } from "@/components/ui/calendar";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+
+
 interface Position {
     x: number;
     y: number;
@@ -130,6 +141,43 @@ const KlotskiGame = () => {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const { level, loading, error } = useDailyPuzzle();
     //const { level, loading, error } = usePuzzle(puzzleId);
+    const [date, setDate] = useState<Date | undefined>(new Date());
+
+
+    const loadPuzzleByDate = async (selectedDate: Date) => {
+        try {
+            const dateStr = format(selectedDate, 'yyyy-MM-dd');
+            const response = await fetch(`https://aitordsgnapi.onrender.com/puzzle/by-date?date=${dateStr}`);
+            if (!response.ok) {
+                throw new Error('Error cargando el puzzle');
+            }
+            const data = await response.json();
+            // Procesar el puzzle como lo haces actualmente
+            const levelString = `${data.movimientos} ${data.puzzle} ${data.clustersize}`;
+            const parsedLevel = parseLevelString(levelString);
+            const { blocks: newBlocks, walls: newWalls } = parseRushHourBoard(parsedLevel.board);
+            setBlocks(newBlocks);
+            setInitialBlocks(JSON.parse(JSON.stringify(newBlocks)));
+            setWalls(newWalls);
+            setRequiredMoves(parsedLevel.moves);
+            setHasWon(false);
+            setMoveCount(0);
+            setTime(0);
+            setIsTimerRunning(true);
+        } catch (error) {
+            console.log()
+            console.error("Error loading puzzle:", error);
+            toast.error('Error cargando el puzzle para la fecha seleccionada');
+        }
+    };
+
+    // Actualizar cuando cambie la fecha
+    useEffect(() => {
+        if (date) {
+            loadPuzzleByDate(date);
+        }
+    }, [date]);
+
 
 
     //#region Manejo de eventos
@@ -471,27 +519,29 @@ const KlotskiGame = () => {
         <div className="min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background touch-none">
             <Toaster position="top-center" />
             <div className="text-center p-4">
-                <div className="flex justify-center items-center gap-8">
-                    {/* Contador de movimientos */}
-                    <div className="flex items-center gap-2 text-foreground">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
-                            <path stroke="none" d="M0 0h24v24H0z" />
-                            <path d="m18 9 3 3-3 3M15 12h6M6 9l-3 3 3 3M3 12h6M9 18l3 3 3-3M12 15v6M15 6l-3-3-3 3M12 3v6" />
-                        </svg>
-                        <span className="text-lg font-bold">{moveCount}/{requiredMoves !== null && requiredMoves}</span>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 max-w-md mx-auto">
+                    {/* Grupo de movimientos y reset */}
+                    <div className="flex items-center gap-4">
+                        {/* Contador de movimientos */}
+                        <div className="flex items-center gap-2 text-foreground">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+                                <path stroke="none" d="M0 0h24v24H0z" />
+                                <path d="m18 9 3 3-3 3M15 12h6M6 9l-3 3 3 3M3 12h6M9 18l3 3 3-3M12 15v6M15 6l-3-3-3 3M12 3v6" />
+                            </svg>
+                            <span className="text-lg font-bold">{moveCount}/{requiredMoves !== null && requiredMoves}</span>
+                        </div>
+
+                        {/* Botón de reset */}
+                        <button
+                            onClick={resetPuzzle}
+                            className="p-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="hover:animate-impulse-rotation-right">
+                                <path stroke="none" d="M0 0h24v24H0z" />
+                                <path d="M19.95 11a8 8 0 1 0-.5 4m.5 5v-5h-5" />
+                            </svg>
+                        </button>
                     </div>
-
-                    {/* Botón de reset */}
-                    <button
-                        onClick={resetPuzzle}
-                        className="p-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="hover:animate-impulse-rotation-right">
-                            <path stroke="none" d="M0 0h24v24H0z" />
-                            <path d="M19.95 11a8 8 0 1 0-.5 4m.5 5v-5h-5" />
-                        </svg>
-                    </button>
-
                     {/* Timer */}
                     <div className="flex items-center gap-2 text-foreground">
                         <svg
@@ -512,6 +562,29 @@ const KlotskiGame = () => {
                             {formatTime(time)}
                         </span>
                     </div>
+
+
+                    {/* Calendario */}
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="w-[240px] justify-start text-left font-normal"
+                            >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? format(date, "PPP") : <span>Pick a date</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={setDate}
+                                initialFocus
+                            />
+                        </PopoverContent>
+                    </Popover>
+
                 </div>
 
                 {hasWon && <Confetti width={width} height={height} />}
